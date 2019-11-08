@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Katalog Książek</title>
+    <link rel="stylesheet" href="assets/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="assets/app.js"></script>
+</head>
+<body>
+    <h1>Katalog Książek</h1>
+    <div id="form">
+        <form>
+            <p>Tytuł: <input id="title" type="text" placeholder=""></p>
+            <p>Autor: <input id="author" type="text" placeholder=""></p>
+            <p>Wydawca: <input id="publisher" type="text placeholder="""></p>
+            <p>ISBN: <input id="isbn" type="text" placeholder=""></p>
+            <p>Gatunek: <input id="type" type="text" placeholder=""></p>
+            <p><button id="sumbit">Zapisz</button></p>
+        </form>
+    </div>
+
+    <br><br><br><br>
+<!--formularz do tworzenia nowych książek ajaxem - POST-->
+
+<!--Gdy użytkownik kliknie na nazwę książki, pod nią ma się rozwijać div z informacjami na
+temat tej strony wczytane za pomocą AJAX (GET) z endpointu /books/{id-książki} Div
+ten ma też zawierać formularz służący do edycji tej książki (AJAX, metoda PUT na
+endpoincie /books/{id-książki}).
+Obok nazwy ma się znajdować guzik służący do usuwania książki (AJAX, metoda DELETE na
+endpoint /books/{id-książki})-->
+
+<!--Lista książek w systemie, wczytane z adresu /books/-->
+    <div>
+        <table>
+            <thead>
+            <td>Autor</td>
+            <td>Tytuł</td>
+            </thead>
+            <tbody id="tbody">
+
+            </tbody>
+        </table>
+    </div>
+
+
+</body>
+</html>

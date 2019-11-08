@@ -1,0 +1,26 @@
+#form {
+    width: 350px;
+}
+
+form p input, form p button {
+    float: right;
+}
+
+table, tr, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 10px;
+}
+
+thead {
+    background-color: #999999;
+    text-align: center;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #CCCCCC;
+}
