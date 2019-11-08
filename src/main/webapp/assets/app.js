@@ -2,7 +2,6 @@ $(function () {
 
     getBooks();
     setForm();
-
 });
 
 function getBooks() {
@@ -26,11 +25,13 @@ function displayBooks(books) {
             // "<td class='title'>" + books[i].title + "</td>" +
             "<td class='title clickable' data-id='" + books[i].id + "'>&#9662; " + books[i].title + "<div class='invisible'></div></td>" +
             "<td>" + books[i].author + "</td>" +
-            "<td>" + "<a href='#'>Usuń</a>" + "</td>" +
+            "<td>" + "<button class='edit' data-id='" + books[i].id + "'>Edytuj</button> &nbsp;&nbsp;" +
+                    "<button class='del' data-id='" + books[i].id + "'>Usuń</button> &nbsp;&nbsp;" + "</td>" +
             "</tr>")
         nextTr.appendTo(tbody);
     }
     addClick();
+    setDelete();
 }
 
 function addClick() {
@@ -99,4 +100,33 @@ function setForm() {
 
 
     })
+}
+
+function setDelete() {
+
+    var deletes = $(".del");
+    for (var i = 0; i < deletes.length; i++) {
+        deletes.eq(i).on("click", function () {
+                $.ajax({
+                    url: "http://localhost:8282/books/" + $(this).data("id"),
+                    method: "DELETE"
+                }).done(function(result) {
+                   getBooks();
+                });
+
+        })
+    }
+    addEdit();
+
+}
+
+function addEdit() {
+
+    var edits = $(".edit");
+    for (var i = 0; i < edits.length; i++) {
+        edits.eq(i).on("click", function () {
+            //TO DO
+            alert("TO DO")
+        })
+    }
 }
