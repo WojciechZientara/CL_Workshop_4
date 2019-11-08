@@ -24,3 +24,7 @@ thead {
 tbody tr:nth-child(even) {
     background-color: #CCCCCC;
 }
+
+.invisible {
+    display: none;
+}
