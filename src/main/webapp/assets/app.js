@@ -125,8 +125,81 @@ function addEdit() {
     var edits = $(".edit");
     for (var i = 0; i < edits.length; i++) {
         edits.eq(i).on("click", function () {
-            //TO DO
-            alert("TO DO")
+            var bookId = $(this).data("id")
+            $.ajax({
+                url: "http://localhost:8282/books/" + bookId,
+                data: {},
+                type: "GET",
+                dataType: "json"
+            }).done(function(result) {
+
+                $("#title").val(result.title);
+                $("#author").val(result.author);
+                $("#publisher").val(result.publisher);
+                $("#isbn").val(result.isbn);
+                $("#type").val(result.type);
+
+                var cancel = $('<button id="cancel">Anuluj</button>');
+
+                $("button#submit").text("Uaktualnij");
+                $("button#submit").parent().append(cancel);
+                $("button#submit").off("click");
+                $(edits).off("click");
+                $(edits).on("click", function () {
+                    alert("Proszę najpierw dokończyć lub anulować aktualną modyfikację")
+                });
+
+
+                $("button#cancel").on("click", function (event) {
+                    event.preventDefault()
+                    $("#title").val("");
+                    $("#author").val("");
+                    $("#publisher").val("");
+                    $("#isbn").val("");
+                    $("#type").val("");
+                    $("button#submit").text("Zapisz");
+                    $("button#cancel").remove();
+                    getBooks();
+                    setForm()
+                })
+
+                $("button#submit").on("click", function (event) {
+                    event.preventDefault()
+                    $("button#cancel").remove();
+                    $("button#submit").text("Zapisz");
+
+                    var title = $("#title");
+                    var author = $("#author");
+                    var publisher = $("#publisher");
+                    var isbn = $("#isbn");
+                    var type = $("#type");
+
+                    $.ajax({
+                        url: "http://localhost:8282/books/" + bookId,
+                        data: JSON.stringify({
+                            id: bookId,
+                            title: title.val(),
+                            author: author.val(),
+                            publisher: publisher.val(),
+                            isbn: isbn.val(),
+                            type: type.val()
+                        }),
+                        method: "PUT",
+                        contentType: "application/json"
+                    }).done(function(result) {
+                        title.val("");
+                        author.val("");
+                        publisher.val("");
+                        isbn.val("");
+                        type.val("");
+                        getBooks();
+                    });
+                })
+
+
+
+            });
+
         })
     }
 }
