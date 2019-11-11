@@ -1,42 +1,59 @@
 $(function () {
-
-    getBooks();
-    setForm();
+    displayBooks();
 });
 
-function getBooks() {
+function displayBooks() {
     $.ajax({
         url: "http://localhost:8282/books/",
         data: {},
         type: "GET",
         dataType: "json"
     }).done(function(result) {
-        displayBooks(result)
+        $('#tbody').empty();
+        for (var i = 0; i < result.length; i++) {
+            var nextTr = $("<tr>" +
+                "<td class='titles' data-id='" + result[i].id + "'>&#9662; " + result[i].title + "<div class='invisible'></div></td>" +
+                "<td>" + result[i].author + "</td>" +
+                "<td>" + "<button class='edit' data-id='" + result[i].id + "'>Edytuj</button> &nbsp;&nbsp;" +
+                "<button class='del' data-id='" + result[i].id + "'>Usuń</button> &nbsp;&nbsp;" + "</td>" +
+                "</tr>")
+            nextTr.appendTo(tbody);
+        }
+        deactivateElements();
+        activateElements();
     });
 }
 
+function deactivateElements() {
+    $("#submit").off("click");
 
-function displayBooks(books) {
-    var tbody = $('#tbody');
-    tbody.empty()
-    for (var i = 0; i < books.length; i++) {
-        var nextTr = $("<tr>" +
-            // "<td class='clickable' data-id='" + books[i].id + "'>&#9662; " + books[i].author + "<div class='invisible'> " + i + "</div></td>" +
-            // "<td class='title'>" + books[i].title + "</td>" +
-            "<td class='title clickable' data-id='" + books[i].id + "'>&#9662; " + books[i].title + "<div class='invisible'></div></td>" +
-            "<td>" + books[i].author + "</td>" +
-            "<td>" + "<button class='edit' data-id='" + books[i].id + "'>Edytuj</button> &nbsp;&nbsp;" +
-                    "<button class='del' data-id='" + books[i].id + "'>Usuń</button> &nbsp;&nbsp;" + "</td>" +
-            "</tr>")
-        nextTr.appendTo(tbody);
+    var titles = $(".titles");
+    for (var i = 0; i < titles.length; i++) {
+        titles.eq(i).off("click");
     }
-    addClick();
-    setDelete();
+
+    var edits = $(".edit");
+    for (var i = 0; i < edits.length; i++) {
+        edits.eq(i).off("click");
+    }
+
+    var deletes = $(".del");
+    for (var i = 0; i < deletes.length; i++) {
+        deletes.eq(i).off("click");
+    }
 }
 
-function addClick() {
+function activateElements() {
+    activateBookAddForm();
+    activateBookDetailsSlideDown();
+    activateEditButtons();
+    activateDeleteButtons();
+}
 
-    var titles = $(".clickable");
+
+function activateBookDetailsSlideDown() {
+
+    var titles = $(".titles");
     for (var i = 0; i < titles.length; i++) {
         titles.eq(i).on("click", function () {
             var div = $(this).find("div");
@@ -52,12 +69,12 @@ function addClick() {
                     type: "GET",
                     dataType: "json"
                 }).done(function(result) {
-                        div.html(
-                            "Id: " + result.id + "<br>" +
-                            "ISBN: " + result.isbn + "<br>" +
-                            "Wydawca: " + result.publisher + "<br>" +
-                            "Gatunek: " + result.type
-                            );
+                    div.html(
+                        "Id: " + result.id + "<br>" +
+                        "ISBN: " + result.isbn + "<br>" +
+                        "Wydawca: " + result.publisher + "<br>" +
+                        "Gatunek: " + result.type
+                    );
                     var html = $(this).parent().html();
                     div.slideDown();
                 });
@@ -67,10 +84,11 @@ function addClick() {
     }
 }
 
-function setForm() {
+function activateBookAddForm() {
 
-    var submit = $("#submit");
-    submit.on("click", function () {
+    $("#submit").on("click", function (event) {
+
+        event.preventDefault()
 
         var title = $("#title");
         var author = $("#author");
@@ -95,32 +113,30 @@ function setForm() {
             publisher.val("");
             isbn.val("");
             type.val("");
-            getBooks();
+            displayBooks();
         });
 
 
     })
 }
 
-function setDelete() {
+function activateDeleteButtons() {
 
     var deletes = $(".del");
     for (var i = 0; i < deletes.length; i++) {
         deletes.eq(i).on("click", function () {
-                $.ajax({
-                    url: "http://localhost:8282/books/" + $(this).data("id"),
-                    method: "DELETE"
-                }).done(function(result) {
-                   getBooks();
-                });
+            $.ajax({
+                url: "http://localhost:8282/books/" + $(this).data("id"),
+                method: "DELETE"
+            }).done(function(result) {
+                displayBooks();
+            });
 
         })
     }
-    addEdit();
-
 }
 
-function addEdit() {
+function activateEditButtons() {
 
     var edits = $(".edit");
     for (var i = 0; i < edits.length; i++) {
@@ -139,15 +155,16 @@ function addEdit() {
                 $("#isbn").val(result.isbn);
                 $("#type").val(result.type);
 
-                var cancel = $('<button id="cancel">Anuluj</button>');
 
+                $(".edit").off("click");
+                $(".edit").on("click", function () {
+                    alert("Proszę najpierw dokończyć lub anulować aktualną modyfikację")
+                });
+
+                var cancel = $('<button id="cancel">Anuluj</button>');
                 $("button#submit").text("Uaktualnij");
                 $("button#submit").parent().append(cancel);
                 $("button#submit").off("click");
-                $(edits).off("click");
-                $(edits).on("click", function () {
-                    alert("Proszę najpierw dokończyć lub anulować aktualną modyfikację")
-                });
 
 
                 $("button#cancel").on("click", function (event) {
@@ -159,8 +176,7 @@ function addEdit() {
                     $("#type").val("");
                     $("button#submit").text("Zapisz");
                     $("button#cancel").remove();
-                    getBooks();
-                    setForm()
+                    displayBooks();
                 })
 
                 $("button#submit").on("click", function (event) {
@@ -192,7 +208,7 @@ function addEdit() {
                         publisher.val("");
                         isbn.val("");
                         type.val("");
-                        getBooks();
+                        displayBooks();
                     });
                 })
 
