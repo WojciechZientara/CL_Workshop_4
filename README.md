@@ -1,6 +1,6 @@
 # CL_Workshop_4
 
-Prosta aplikacja webowa do katalogowania książek <br><br>
+A simple book cataloguing frontend web application <br><br>
 
 HTML<br>
 JavaScript<br>
